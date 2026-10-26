@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
@@ -28,39 +30,56 @@ class Message
 
     #[ORM\Column(length: 255)]
     #[Groups(['message:write'])]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    #[Assert\Length(max: 255)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['message:write'])]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
+    #[Assert\Length(max: 255)]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['message:write'])]
+    #[Assert\Email(message: 'L\'adresse email n\'est pas valide.')]
     private ?string $mail = null;
 
     #[ORM\Column(length: 20)]
     #[Groups(['message:write'])]
+    #[Assert\NotBlank(message: 'Le téléphone est obligatoire.')]
+    #[Assert\Length(max: 20)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['message:write'])]
+    #[Assert\NotBlank(message: 'L\'adresse est obligatoire.')]
+    #[Assert\Length(max: 255)]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 10)]
     #[Groups(['message:write'])]
+    #[Assert\NotBlank(message: 'Le code postal est obligatoire.')]
+    #[Assert\Regex(pattern: '/^\d{5}$/', message: 'Le code postal doit contenir 5 chiffres.')]
     private ?string $codePostal = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['message:write'])]
+    #[Assert\NotBlank(message: 'La ville est obligatoire.')]
+    #[Assert\Length(max: 255)]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['message:write'])]
+    #[Assert\NotBlank(message: 'Le message est obligatoire.')]
+    #[Assert\Length(min: 10, max: 5000, minMessage: 'Le message doit faire au moins 10 caractères.')]
     private ?string $message = null;
 
     #[ORM\Column]
-    #[Groups(['message:write'])]
+    #[Assert\NotNull(message: 'Vous devez accepter la politique de confidentialité.')]
+    #[Assert\IsTrue(message: 'Vous devez accepter la politique de confidentialité.')]
     private ?bool $rgpd = null;
+
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateEnvoi = null;
