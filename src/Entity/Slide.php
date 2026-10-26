@@ -2,24 +2,38 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 use App\Repository\SlideRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SlideRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+    ],
+    normalizationContext: ['groups' => ['slide:read']],
+    order: ['ordre' => 'ASC'],
+)]
 class Slide
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['slide:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['slide:read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['slide:read'])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['slide:read'])]
     private ?string $alt = null;
 
     #[ORM\Column]
