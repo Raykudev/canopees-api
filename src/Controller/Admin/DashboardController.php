@@ -32,7 +32,7 @@ class DashboardController extends AbstractDashboardController
             ['libelle' => 'Messages non lus', 'icone' => 'fas fa-envelope', 'couleur' => 'couleur-rose', 'nombre' => $this->messageRepository->count(['lu' => false]), 'route' => null],
             ['libelle' => 'Prestations', 'icone' => 'fas fa-leaf', 'couleur' => 'couleur-vert', 'nombre' => $this->prestationRepository->count(), 'route' => 'admin_prestation_index'],
             ['libelle' => 'Réalisations', 'icone' => 'fas fa-camera', 'couleur' => 'couleur-mauve', 'nombre' => $this->realisationRepository->count(), 'route' => 'admin_realisation_index'],
-            ['libelle' => 'Photos du slider', 'icone' => 'fas fa-images', 'couleur' => 'couleur-orange', 'nombre' => $this->slideRepository->count(), 'route' => null],
+            ['libelle' => 'Photos du slider', 'icone' => 'fas fa-images', 'couleur' => 'couleur-orange', 'nombre' => $this->slideRepository->count(), 'route' => 'admin_slide_index'],
         ];
 
         return $this->render('admin/dashboard.html.twig', [
@@ -58,5 +58,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Tableau de bord', 'fas fa-house')->setCssClass('couleur-bleu');
         yield MenuItem::linkTo(PrestationCrudController::class, 'Prestations & tarifs', 'fas fa-leaf')->setCssClass('couleur-vert');
         yield MenuItem::linkTo(RealisationCrudController::class, 'Réalisations', 'fas fa-camera')->setCssClass('couleur-mauve');
+        yield MenuItem::linkTo(SlideCrudController::class, 'Slider de l\'accueil', 'fas fa-images')->setCssClass('couleur-orange');
     }
 }
