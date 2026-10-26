@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Entreprise;
 use App\Entity\Message;
 use App\Entity\Page;
@@ -16,6 +18,11 @@ class AppFixtures extends Fixture
 {
     private const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vehicula ligula in pharetra placerat. Integer eros lectus, scelerisque a lectus a, lacinia hendrerit erat.';
 
+    public function __construct(
+        private UserPasswordHasherInterface $hasher,
+    ) {
+    }
+
     public function load(ObjectManager $manager): void
     {
         $prestations = $this->chargerPrestations($manager);
@@ -24,6 +31,7 @@ class AppFixtures extends Fixture
         $this->chargerEntreprise($manager);
         $this->chargerPages($manager);
         $this->chargerMessages($manager, $prestations);
+        $this->chargerAdmin($manager);
 
         $manager->flush();
     }
@@ -296,5 +304,19 @@ class AppFixtures extends Fixture
                 ->setMessage('Bonjour, proposez-vous des contrats d\'entretien à l\'année pour une copropriété ?')
                 ->setRgpd(true)
         );
+    }
+
+    private function chargerAdmin(ObjectManager $manager): void
+    {
+        $user = (new User())
+            ->setEmail('bob@canopees.fr')
+            ->setNom('Canopées')
+            ->setPrenom('Bob')
+            ->setRoles(['ROLE_ADMIN']);
+
+        // Le mot de passe n'est jamais stocké en clair : on enregistre son hachage
+        $user->setPassword($this->hasher->hashPassword($user, 'Canopees2026!'));
+
+        $manager->persist($user);
     }
 }
