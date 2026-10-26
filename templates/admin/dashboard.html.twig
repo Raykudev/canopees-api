@@ -1,0 +1,46 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Bonjour {{ app.user.prenom }} 👋{% endblock %}
+
+{% block main %}
+    <div class="row g-3 mb-4">
+        {% for carte in cartes %}
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-muted small"><i class="{{ carte.icone }}"></i> {{ carte.libelle }}</div>
+                        <div class="fs-2 fw-bold">{{ carte.nombre }}</div>
+                        {% if carte.route %}
+                            <a href="{{ path(carte.route) }}" class="small">Gérer</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="h5">Derniers messages reçus</h2>
+            {% if derniersMessages is empty %}
+                <p class="text-muted mb-0">Aucun message pour le moment.</p>
+            {% else %}
+                <table class="table mb-0">
+                    <thead>
+                        <tr><th>Reçu le</th><th>De</th><th>Prestation</th><th>État</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for message in derniersMessages %}
+                            <tr>
+                                <td>{{ message.dateEnvoi|date('d/m/Y H:i') }}</td>
+                                <td>{{ message.prenom }} {{ message.nom }}</td>
+                                <td>{{ message.prestation ? message.prestation.titre : '—' }}</td>
+                                <td>{% if message.lu %}Lu{% else %}<strong>Nouveau</strong>{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
