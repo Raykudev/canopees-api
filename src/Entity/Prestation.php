@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use App\Repository\PrestationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,6 +27,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 class Prestation
 {
+    // Dossier (dans public/) où sont rangées les images de cette entité
+    public const DOSSIER_IMAGES = 'uploads/prestations';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -41,7 +45,6 @@ class Prestation
     private ?string $texte = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['prestation:read'])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
@@ -225,5 +228,16 @@ class Prestation
         }
 
         return $this;
+    }
+
+    /**
+     * Chemin public de l'image, exposé dans l'API sous le nom « image »
+     * (en base, on ne stocke que le nom du fichier).
+     */
+    #[Groups(['prestation:read'])]
+    #[SerializedName('image')]
+    public function getImageUrl(): ?string
+    {
+        return $this->image ? '/' . self::DOSSIER_IMAGES . '/' . $this->image : null;
     }
 }

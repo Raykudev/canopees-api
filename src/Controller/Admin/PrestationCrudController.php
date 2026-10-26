@@ -6,6 +6,7 @@ use App\Entity\Prestation;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -40,7 +41,11 @@ class PrestationCrudController extends AbstractCrudController
         yield TextareaField::new('texteTarif', 'Texte spécifique à la page Tarifs')
             ->hideOnIndex()
             ->setHelp('Facultatif : remplace la description sur la page Tarifs.');
-        yield TextField::new('image', 'Image')->hideOnIndex();
+        yield ImageField::new('image', 'Image')
+            ->setBasePath(Prestation::DOSSIER_IMAGES)
+            ->setUploadDir('public/' . Prestation::DOSSIER_IMAGES)
+            ->setUploadedFileNamePattern('[slug]-[randomhash].[extension]')
+            ->setRequired(Crud::PAGE_NEW === $pageName);
         yield TextField::new('alt', "Description de l'image (accessibilité)")->hideOnIndex();
     }
 }

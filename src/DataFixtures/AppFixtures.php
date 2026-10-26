@@ -43,14 +43,14 @@ class AppFixtures extends Fixture
     {
         // clé => [titre, texte, image, alt, prix en centimes, texte spécifique à la page Tarifs]
         $donnees = [
-            'elagage' => ["Elagage et abattage d'arbres", self::LOREM, '/images/prestations/imageDur/elagage-canopees.jpg', 'Un élagueur de Canopees en action sur un arbre', 59900, null],
-            'conception' => ["Conception et réalisation d'espaces verts", self::LOREM, '/images/prestations/imageDur/vert.jpg', 'Espace vert fleuri fraîchement aménagé', 89900, null],
-            'entretien' => ['Entretien des espaces verts', self::LOREM, '/images/prestations/imageDur/entretien-canopees.jpg', 'Espace vert entretenu avec pelouse tondue', 29900, null],
-            'haies' => ['Taille des haies', self::LOREM, '/images/prestations/imageDur/haie.jpg', "Taille d'une haie au sécateur", 39900, null],
+            'elagage' => ["Elagage et abattage d'arbres", self::LOREM, 'elagage-canopees.jpg', 'Un élagueur de Canopees en action sur un arbre', 59900, null],
+            'conception' => ["Conception et réalisation d'espaces verts", self::LOREM, 'vert.jpg', 'Espace vert fleuri fraîchement aménagé', 89900, null],
+            'entretien' => ['Entretien des espaces verts', self::LOREM, 'entretien-canopees.jpg', 'Espace vert entretenu avec pelouse tondue', 29900, null],
+            'haies' => ['Taille des haies', self::LOREM, 'haie.jpg', "Taille d'une haie au sécateur", 39900, null],
             'eco' => [
                 'Valorisation des déchets verts ( compostage )',
                 "Pour le respect de l'environnement, nous collectons les déchets verts, afin de les réutiliser pour du compostage.",
-                '/images/prestations/imageDur/eco.jpg',
+                'eco.jpg',
                 'Illustration du recyclage des déchets verts',
                 null,
                 'La collecte des déchets verts est incluse dans chaque prestation. Pour une demande de collecte seule, contactez-nous directement pour étudier votre besoin.',
@@ -84,44 +84,44 @@ class AppFixtures extends Fixture
         // Les photos de la modale de chaque prestation : clé de la prestation => [image, alt]
         $photos = [
             'elagage' => [
-                ['/images/prestations/elagage/elagage-1.jpg', "Réalisation d'élagage"],
-                ['/images/prestations/elagage/elagage-2.jpg', "Réalisation d'élagage"],
-                ['/images/prestations/elagage/elagage-3.jpg', "Réalisation d'élagage"],
-                ['/images/prestations/elagage/elagage-4.jpg', "Réalisation d'élagage"],
-                ['/images/prestations/elagage/elagage-5.jpg', "Réalisation d'élagage"],
-                ['/images/prestations/elagage/elagage-6.jpg', "Réalisation d'élagage"],
+                ['elagage-1.jpg', "Réalisation d'élagage"],
+                ['elagage-2.jpg', "Réalisation d'élagage"],
+                ['elagage-3.jpg', "Réalisation d'élagage"],
+                ['elagage-4.jpg', "Réalisation d'élagage"],
+                ['elagage-5.jpg', "Réalisation d'élagage"],
+                ['elagage-6.jpg', "Réalisation d'élagage"],
             ],
             'conception' => [
-                ['/images/prestations/conception/conception-1.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
-                ['/images/prestations/conception/conception-2.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
-                ['/images/prestations/conception/conception-3.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
-                ['/images/prestations/conception/conception-4.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
-                ['/images/prestations/conception/conception-5.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
-                ['/images/prestations/conception/conception-6.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
+                ['conception-1.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
+                ['conception-2.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
+                ['conception-3.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
+                ['conception-4.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
+                ['conception-5.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
+                ['conception-6.jpg', "Réalisation d'une conception d'espace vert conçue par Canopees"],
             ],
             'entretien' => [
-                ['/images/prestations/entretien/entretien1.jpg', "Jardin fleuri avec des arbres entourés d'une bordure fleuri"],
-                ['/images/prestations/entretien/entretien2.jpg', 'Grand espaces fleuri, avec de nombreuses fleurs de toutes les couleurs'],
-                ['/images/prestations/entretien/entretien3.jpg', 'Parc avec des arbres taillés et une pelouse vertes fraichement entretenu'],
-                ['/images/prestations/entretien/entretien4.jpg', 'Une personne tondant la pelouse, une autre personne nettoyant la bordure du gazon et des arbres'],
-                ['/images/prestations/entretien/entretien5.jpg', "Une personnes soufflant le reste d'herbes coupé"],
-                ['/images/prestations/entretien/entretien6.jpg', "Un immense parc, avec de magnifique arbres, une pelouse vertes fraichement entretenu, et un chemin en terre pour se balader a l'interieur"],
+                ['entretien1.jpg', "Jardin fleuri avec des arbres entourés d'une bordure fleuri"],
+                ['entretien2.jpg', 'Grand espaces fleuri, avec de nombreuses fleurs de toutes les couleurs'],
+                ['entretien3.jpg', 'Parc avec des arbres taillés et une pelouse vertes fraichement entretenu'],
+                ['entretien4.jpg', 'Une personne tondant la pelouse, une autre personne nettoyant la bordure du gazon et des arbres'],
+                ['entretien5.jpg', "Une personnes soufflant le reste d'herbes coupé"],
+                ['entretien6.jpg', "Un immense parc, avec de magnifique arbres, une pelouse vertes fraichement entretenu, et un chemin en terre pour se balader a l'interieur"],
             ],
             'haies' => [
-                ['/images/prestations/taille/taille1.jpg', 'Haie taillé en forme de sapin'],
-                ['/images/prestations/taille/taille2.jpg', '3 Haie taillé en boules'],
-                ['/images/prestations/taille/taille3.jpg', 'Espace vert entretenu avec des haies sculptées et un jardin paysager soigné'],
-                ['/images/prestations/taille/taille4.jpg', 'chemin bordé de haies, avec une haie en arche a la fin'],
-                ['/images/prestations/taille/taille5.jpg', 'Espace vert soigneusement entretenu devant un bâtiment moderne avec haies taillées et pelouse'],
-                ['/images/prestations/taille/taille6.jpg', 'Végétation soigneusement taillée formant une arche naturelle dans un jardin paysager'],
+                ['taille1.jpg', 'Haie taillé en forme de sapin'],
+                ['taille2.jpg', '3 Haie taillé en boules'],
+                ['taille3.jpg', 'Espace vert entretenu avec des haies sculptées et un jardin paysager soigné'],
+                ['taille4.jpg', 'chemin bordé de haies, avec une haie en arche a la fin'],
+                ['taille5.jpg', 'Espace vert soigneusement entretenu devant un bâtiment moderne avec haies taillées et pelouse'],
+                ['taille6.jpg', 'Végétation soigneusement taillée formant une arche naturelle dans un jardin paysager'],
             ],
             'eco' => [
-                ['/images/prestations/eco/eco1.jpg', "Camion collectant les branches et l'herbes coupées"],
-                ['/images/prestations/eco/eco2.jpg', 'Dépôt de déchets verts pour compostage'],
-                ['/images/prestations/eco/eco3.jpg', 'Gros tas de compost devenu du compost mûr'],
-                ['/images/prestations/eco/eco4.jpg', "2 agents de l'entreprise Canopées qui collecte les déchets verts d'un particulier"],
-                ['/images/prestations/eco/eco5.jpg', "2 agents de l'entreprise Canopées qui collecte les déchets verts d'un particulier"],
-                ['/images/prestations/eco/eco6.jpg', 'Machine faisant de longue rangées de compost'],
+                ['eco1.jpg', "Camion collectant les branches et l'herbes coupées"],
+                ['eco2.jpg', 'Dépôt de déchets verts pour compostage'],
+                ['eco3.jpg', 'Gros tas de compost devenu du compost mûr'],
+                ['eco4.jpg', "2 agents de l'entreprise Canopées qui collecte les déchets verts d'un particulier"],
+                ['eco5.jpg', "2 agents de l'entreprise Canopées qui collecte les déchets verts d'un particulier"],
+                ['eco6.jpg', 'Machine faisant de longue rangées de compost'],
             ],
         ];
 
@@ -136,12 +136,12 @@ class AppFixtures extends Fixture
 
         // Les photos du carrousel de l'accueil : les réalisations les plus récentes, cochées « accueil »
         $carrousel = [
-            ['entretien', '/images/realisations/realisation-1.jpg', 'Jardin avec une belle pelouse verte devant une maison moderne', '2026-10-12'],
-            ['conception', '/images/realisations/realisation-2.jpg', 'Allée en gravillons serpentant dans un jardin tropical luxuriant', '2026-10-01'],
-            ['conception', '/images/realisations/realisation-3.jpg', "Aménagement paysager d'un patio moderne avec bancs en bois et plantes tropicales", '2026-09-18'],
-            ['entretien', '/images/realisations/realisation-4.jpg', "Jardin fleuri et arbustes taillés devant une maison blanche, avec un chemin en pas japonais", '2026-09-05'],
-            ['conception', '/images/realisations/realisation-5.jpg', 'Massifs de palmiers et de plantes tropicales le long d\'une allée pavée', '2026-08-22'],
-            ['conception', '/images/realisations/realisation-6.jpg', "Jardinières en pierre plantées d'arbres et d'arbustes au pied d'un immeuble", '2026-08-08'],
+            ['entretien', 'realisation-1.jpg', 'Jardin avec une belle pelouse verte devant une maison moderne', '2026-10-12'],
+            ['conception', 'realisation-2.jpg', 'Allée en gravillons serpentant dans un jardin tropical luxuriant', '2026-10-01'],
+            ['conception', 'realisation-3.jpg', "Aménagement paysager d'un patio moderne avec bancs en bois et plantes tropicales", '2026-09-18'],
+            ['entretien', 'realisation-4.jpg', "Jardin fleuri et arbustes taillés devant une maison blanche, avec un chemin en pas japonais", '2026-09-05'],
+            ['conception', 'realisation-5.jpg', 'Massifs de palmiers et de plantes tropicales le long d\'une allée pavée', '2026-08-22'],
+            ['conception', 'realisation-6.jpg', "Jardinières en pierre plantées d'arbres et d'arbustes au pied d'un immeuble", '2026-08-08'],
         ];
 
         foreach ($carrousel as [$cle, $image, $alt, $jour]) {
@@ -162,10 +162,10 @@ class AppFixtures extends Fixture
     private function chargerSlides(ObjectManager $manager): void
     {
         $slides = [
-            ['Jardin', '/images/slider/jardin-vert.jpg', 'Grand jardin avec une magnifique pelouse verte.'],
-            ['Palmier', '/images/slider/plantation-palmier.jpg', 'Jolie coin de plantation de palmier et yuka.'],
-            ['elagage-arbre', '/images/slider/elagage-arbre.jpg', 'Personne qui elague un arbre.'],
-            ['elagage-palmier', '/images/slider/elagage-palmier.jpg', 'Personne qui elague un palmier.'],
+            ['Jardin', 'jardin-vert.jpg', 'Grand jardin avec une magnifique pelouse verte.'],
+            ['Palmier', 'plantation-palmier.jpg', 'Jolie coin de plantation de palmier et yuka.'],
+            ['elagage-arbre', 'elagage-arbre.jpg', 'Personne qui elague un arbre.'],
+            ['elagage-palmier', 'elagage-palmier.jpg', 'Personne qui elague un palmier.'],
         ];
 
         foreach ($slides as $index => [$nom, $image, $alt]) {
@@ -196,18 +196,18 @@ class AppFixtures extends Fixture
         // Chaque section : type + les champs utiles (titre, sousTitre, texte, image, alt, icone)
         $pages = [
             'accueil' => ["Canopées – Création et entretien d'espaces verts", [
-                ['type' => 'presentation', 'titre' => 'Canopées', 'sousTitre' => "Société spécialisée dans la création et l'entretien d'espaces verts.", 'image' => '/images/presentation/garden.jpg', 'alt' => 'Grand jardin remplie de fleurs de toutes les couleurs'],
+                ['type' => 'presentation', 'titre' => 'Canopées', 'sousTitre' => "Société spécialisée dans la création et l'entretien d'espaces verts.", 'image' => 'garden.jpg', 'alt' => 'Grand jardin remplie de fleurs de toutes les couleurs'],
                 ['type' => 'public-cible-intro', 'titre' => 'Pour qui travaillons-nous ?', 'texte' => 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, assumenda minus! Voluptate vel rerum accusantium laborum provident obcaecati, quis expedita.'],
-                ['type' => 'public-cible', 'titre' => 'Particuliers', 'image' => '/images/PublicCible/particulier.jpg', 'alt' => 'Jardin de particuliers', 'icone' => '/images/PublicCible/particulierCircle.jpg'],
-                ['type' => 'public-cible', 'titre' => 'Professionnels', 'image' => '/images/PublicCible/entreprise.jpg', 'alt' => 'Espace vert professionnel', 'icone' => '/images/PublicCible/entrepriseCircle.jpg'],
-                ['type' => 'public-cible', 'titre' => 'Collectivités', 'image' => '/images/PublicCible/collectivite.jpg', 'alt' => 'Espace vert collectivité', 'icone' => '/images/PublicCible/collectiviteCircle.jpg'],
+                ['type' => 'public-cible', 'titre' => 'Particuliers', 'image' => 'particulier.jpg', 'alt' => 'Jardin de particuliers', 'icone' => 'particulierCircle.jpg'],
+                ['type' => 'public-cible', 'titre' => 'Professionnels', 'image' => 'entreprise.jpg', 'alt' => 'Espace vert professionnel', 'icone' => 'entrepriseCircle.jpg'],
+                ['type' => 'public-cible', 'titre' => 'Collectivités', 'image' => 'collectivite.jpg', 'alt' => 'Espace vert collectivité', 'icone' => 'collectiviteCircle.jpg'],
             ]],
             'qui-sommes-nous' => ['Qui sommes-nous – Canopées', [
                 ['type' => 'presentation', 'titre' => 'Qui sommes-nous ?', 'texte' => "Canopées est une entreprise spécialisée dans la création et l'entretien d'espaces verts, pour les particuliers, professionnels et collectivités.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, assumenda minus! Voluptate vel rerum accusantium laborum provident obcaecati, quis expedita."],
-                ['type' => 'fondateur', 'titre' => 'Bob', 'sousTitre' => 'Fondateur', 'texte' => 'Passionné de nature depuis toujours, Bob a fondé Canopées pour partager son amour des espaces verts.', 'image' => '/images/fondateurs/image-1.jpg', 'alt' => 'Photo de profil de Bob, fondateur de Canopées', 'icone' => '/images/fondateurs/profil-1.jpg'],
-                ['type' => 'fondateur', 'titre' => 'Tom', 'sousTitre' => 'Co-Fondateur', 'texte' => 'Expert en aménagement paysager, Tom apporte son savoir-faire technique à chaque projet Canopées.', 'image' => '/images/fondateurs/image-2.jpg', 'alt' => 'Photo de profil de Tom, cofondateur de Canopées', 'icone' => '/images/fondateurs/profil-2.jpg'],
-                ['type' => 'histoire', 'titre' => "Histoire de l'entreprise", 'texte' => 'La société Canopées a été fondée en 2020 par Bob et Tom, deux amoureux de la nature. Notre mission est de créer et entretenir des espaces naturels qui améliorent la qualité de vie des personnes.', 'image' => '/images/histoire/mountain.jpg', 'alt' => "Photo d'une montagne"],
-                ['type' => 'valeurs-intro', 'titre' => 'Nos valeurs', 'image' => '/images/histoire/arbre.webp', 'alt' => 'Plante en pot'],
+                ['type' => 'fondateur', 'titre' => 'Bob', 'sousTitre' => 'Fondateur', 'texte' => 'Passionné de nature depuis toujours, Bob a fondé Canopées pour partager son amour des espaces verts.', 'image' => 'image-1.jpg', 'alt' => 'Photo de profil de Bob, fondateur de Canopées', 'icone' => 'profil-1.jpg'],
+                ['type' => 'fondateur', 'titre' => 'Tom', 'sousTitre' => 'Co-Fondateur', 'texte' => 'Expert en aménagement paysager, Tom apporte son savoir-faire technique à chaque projet Canopées.', 'image' => 'image-2.jpg', 'alt' => 'Photo de profil de Tom, cofondateur de Canopées', 'icone' => 'profil-2.jpg'],
+                ['type' => 'histoire', 'titre' => "Histoire de l'entreprise", 'texte' => 'La société Canopées a été fondée en 2020 par Bob et Tom, deux amoureux de la nature. Notre mission est de créer et entretenir des espaces naturels qui améliorent la qualité de vie des personnes.', 'image' => 'mountain.jpg', 'alt' => "Photo d'une montagne"],
+                ['type' => 'valeurs-intro', 'titre' => 'Nos valeurs', 'image' => 'arbre.webp', 'alt' => 'Plante en pot'],
                 ['type' => 'valeur', 'titre' => "Respect de l'environnement", 'texte' => 'Nous privilégions des pratiques durables et respectueuses de la biodiversité sur chaque chantier.'],
                 ['type' => 'valeur', 'titre' => 'Savoir-faire', 'texte' => "Notre équipe s'appuie sur une expertise technique éprouvée pour garantir des réalisations durables."],
                 ['type' => 'valeur', 'titre' => 'Proximité client', 'texte' => "Nous restons à l'écoute de chaque client pour construire un projet qui correspond vraiment à ses besoins."],

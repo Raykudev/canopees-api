@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use App\Repository\SlideRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,6 +19,9 @@ use Doctrine\ORM\Mapping as ORM;
 )]
 class Slide
 {
+    // Dossier (dans public/) où sont rangées les images de cette entité
+    public const DOSSIER_IMAGES = 'uploads/slides';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -29,7 +33,6 @@ class Slide
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['slide:read'])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
@@ -90,5 +93,16 @@ class Slide
         $this->ordre = $ordre;
 
         return $this;
+    }
+
+    /**
+     * Chemin public de l'image, exposé dans l'API sous le nom « image »
+     * (en base, on ne stocke que le nom du fichier).
+     */
+    #[Groups(['slide:read'])]
+    #[SerializedName('image')]
+    public function getImageUrl(): ?string
+    {
+        return $this->image ? '/' . self::DOSSIER_IMAGES . '/' . $this->image : null;
     }
 }

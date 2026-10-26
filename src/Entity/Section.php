@@ -6,10 +6,14 @@ use App\Repository\SectionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: SectionRepository::class)]
 class Section
 {
+    // Dossier (dans public/) où sont rangées les images de cette entité
+    public const DOSSIER_IMAGES = 'uploads/pages';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,7 +32,6 @@ class Section
     private ?string $texte = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['page:read'])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -40,7 +43,6 @@ class Section
     private ?string $sousTitre = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['page:read'])]
     private ?string $icone = null;
 
     #[ORM\Column]
@@ -161,5 +163,27 @@ class Section
         $this->page = $page;
 
         return $this;
+    }
+
+    /**
+     * Chemin public de l'image, exposé dans l'API sous le nom « image »
+     * (en base, on ne stocke que le nom du fichier).
+     */
+    #[Groups(['page:read'])]
+    #[SerializedName('image')]
+    public function getImageUrl(): ?string
+    {
+        return $this->image ? '/' . self::DOSSIER_IMAGES . '/' . $this->image : null;
+    }
+
+    /**
+     * Chemin public de l'image, exposé dans l'API sous le nom « icone »
+     * (en base, on ne stocke que le nom du fichier).
+     */
+    #[Groups(['page:read'])]
+    #[SerializedName('icone')]
+    public function getIconeUrl(): ?string
+    {
+        return $this->icone ? '/' . self::DOSSIER_IMAGES . '/' . $this->icone : null;
     }
 }

@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use App\Repository\RealisationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,6 +26,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 class Realisation
 {
+    // Dossier (dans public/) où sont rangées les images de cette entité
+    public const DOSSIER_IMAGES = 'uploads/realisations';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -32,7 +36,6 @@ class Realisation
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['realisation:read'])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
@@ -114,5 +117,16 @@ class Realisation
         $this->prestation = $prestation;
 
         return $this;
+    }
+
+    /**
+     * Chemin public de l'image, exposé dans l'API sous le nom « image »
+     * (en base, on ne stocke que le nom du fichier).
+     */
+    #[Groups(['realisation:read'])]
+    #[SerializedName('image')]
+    public function getImageUrl(): ?string
+    {
+        return $this->image ? '/' . self::DOSSIER_IMAGES . '/' . $this->image : null;
     }
 }
