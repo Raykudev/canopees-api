@@ -5,8 +5,20 @@ namespace App\Entity;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Attribute\Groups;
+
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
+#[ApiResource(
+    operations: [
+        new Post(),
+    ],
+    denormalizationContext: ['groups' => ['message:write']],
+)]
+
+
 class Message
 {
     #[ORM\Id]
@@ -15,30 +27,39 @@ class Message
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['message:write'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['message:write'])]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['message:write'])]
     private ?string $mail = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['message:write'])]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['message:write'])]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 10)]
+    #[Groups(['message:write'])]
     private ?string $codePostal = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['message:write'])]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['message:write'])]
     private ?string $message = null;
 
     #[ORM\Column]
+    #[Groups(['message:write'])]
     private ?bool $rgpd = null;
 
     #[ORM\Column]
@@ -48,7 +69,15 @@ class Message
     private ?bool $lu = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[Groups(['message:write'])]
     private ?Prestation $prestation = null;
+
+    public function __construct()
+{
+    $this->dateEnvoi = new \DateTimeImmutable();   // maintenant
+    $this->lu = false;                              // un nouveau message n'est pas lu
+}
+
 
     public function getId(): ?int
     {
