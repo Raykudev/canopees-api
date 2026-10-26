@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SectionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SectionRepository::class)]
 class Section
@@ -15,18 +16,23 @@ class Section
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['page:read'])]
     private ?string $type = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['page:read'])]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['page:read'])]
     private ?string $texte = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['page:read'])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['page:read'])]
     private ?string $alt = null;
 
     #[ORM\Column]
