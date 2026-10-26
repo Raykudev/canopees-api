@@ -1,0 +1,19 @@
+/* Couleurs des icônes du back-office : les couleurs du site Canopées.
+   Pour colorer une icône, on ajoute une de ces classes (couleur-vert, couleur-mauve…)
+   sur un lien du menu (->setCssClass()) ou sur une carte du tableau de bord ('couleur'). */
+.couleur-vert   { --couleur-icone: #098136; }
+.couleur-mauve  { --couleur-icone: #692B85; }
+.couleur-orange { --couleur-icone: #F1A80F; }
+.couleur-bleu   { --couleur-icone: #2A4B9B; }
+.couleur-rose   { --couleur-icone: #DA4D66; }
+.couleur-rouge  { --couleur-icone: #B23B53; }
+
+/* Seule l'icône prend la couleur, pas le texte du lien */
+.ea-sidebar-item-link .ea-sidebar-item-icon,
+.carte-icone {
+    color: var(--couleur-icone, inherit);
+}
+
+.carte-icone {
+    font-size: 1.5rem;
+}
