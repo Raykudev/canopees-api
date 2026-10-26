@@ -31,7 +31,7 @@ class AppFixtures extends Fixture
         $this->chargerEntreprise($manager);
         $this->chargerPages($manager);
         $this->chargerMessages($manager, $prestations);
-        $this->chargerAdmin($manager);
+        $this->chargerAdmins($manager);
 
         $manager->flush();
     }
@@ -306,17 +306,25 @@ class AppFixtures extends Fixture
         );
     }
 
-    private function chargerAdmin(ObjectManager $manager): void
+    private function chargerAdmins(ObjectManager $manager): void
     {
-        $user = (new User())
-            ->setEmail('bob@canopees.fr')
-            ->setNom('Canopées')
-            ->setPrenom('Bob')
-            ->setRoles(['ROLE_ADMIN']);
+        // Un compte par fondateur : email => [prénom, mot de passe de développement]
+        $admins = [
+            'bob@canopees.fr' => ['Bob', 'Canopees2026!'],
+            'tom@canopees.fr' => ['Tom', 'Canopees2026!'],
+        ];
 
-        // Le mot de passe n'est jamais stocké en clair : on enregistre son hachage
-        $user->setPassword($this->hasher->hashPassword($user, 'Canopees2026!'));
+        foreach ($admins as $email => [$prenom, $motDePasse]) {
+            $user = (new User())
+                ->setEmail($email)
+                ->setNom('Canopées')
+                ->setPrenom($prenom)
+                ->setRoles(['ROLE_ADMIN']);
 
-        $manager->persist($user);
+            // Le mot de passe n'est jamais stocké en clair : on enregistre son hachage
+            $user->setPassword($this->hasher->hashPassword($user, $motDePasse));
+
+            $manager->persist($user);
+        }
     }
 }
