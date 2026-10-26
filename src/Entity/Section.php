@@ -35,6 +35,14 @@ class Section
     #[Groups(['page:read'])]
     private ?string $alt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['page:read'])]
+    private ?string $sousTitre = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['page:read'])]
+    private ?string $icone = null;
+
     #[ORM\Column]
     private ?int $ordre = null;
 
@@ -103,6 +111,30 @@ class Section
     public function setAlt(?string $alt): static
     {
         $this->alt = $alt;
+
+        return $this;
+    }
+
+    public function getSousTitre(): ?string
+    {
+        return $this->sousTitre;
+    }
+
+    public function setSousTitre(?string $sousTitre): static
+    {
+        $this->sousTitre = $sousTitre;
+
+        return $this;
+    }
+
+    public function getIcone(): ?string
+    {
+        return $this->icone;
+    }
+
+    public function setIcone(?string $icone): static
+    {
+        $this->icone = $icone;
 
         return $this;
     }
