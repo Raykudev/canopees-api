@@ -42,9 +42,6 @@ class Section
     #[Groups(['page:read'])]
     private ?string $sousTitre = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $icone = null;
-
     #[ORM\Column]
     private ?int $ordre = null;
 
@@ -129,18 +126,6 @@ class Section
         return $this;
     }
 
-    public function getIcone(): ?string
-    {
-        return $this->icone;
-    }
-
-    public function setIcone(?string $icone): static
-    {
-        $this->icone = $icone;
-
-        return $this;
-    }
-
     public function getOrdre(): ?int
     {
         return $this->ordre;
@@ -174,16 +159,5 @@ class Section
     public function getImageUrl(): ?string
     {
         return $this->image ? '/' . self::DOSSIER_IMAGES . '/' . $this->image : null;
-    }
-
-    /**
-     * Chemin public de l'image, exposé dans l'API sous le nom « icone »
-     * (en base, on ne stocke que le nom du fichier).
-     */
-    #[Groups(['page:read'])]
-    #[SerializedName('icone')]
-    public function getIconeUrl(): ?string
-    {
-        return $this->icone ? '/' . self::DOSSIER_IMAGES . '/' . $this->icone : null;
     }
 }

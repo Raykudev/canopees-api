@@ -5,12 +5,15 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Entreprise;
+use App\Entity\Fondateur;
 use App\Entity\Message;
 use App\Entity\Page;
 use App\Entity\Prestation;
+use App\Entity\PublicCible;
 use App\Entity\Realisation;
 use App\Entity\Section;
 use App\Entity\Slide;
+use App\Entity\Valeur;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -30,6 +33,9 @@ class AppFixtures extends Fixture
         $this->chargerSlides($manager);
         $this->chargerEntreprise($manager);
         $this->chargerPages($manager);
+        $this->chargerFondateurs($manager);
+        $this->chargerPublicsCibles($manager);
+        $this->chargerValeurs($manager);
         $this->chargerMessages($manager, $prestations);
         $this->chargerAdmins($manager);
 
@@ -193,27 +199,16 @@ class AppFixtures extends Fixture
     private function chargerPages(ObjectManager $manager): void
     {
         // slug => [titre de la page, liste des sections]
-        // Chaque section : type + les champs utiles (titre, sousTitre, texte, image, alt, icone)
+        // Chaque section : type + les champs utiles (titre, sousTitre, texte, image, alt)
         $pages = [
             'accueil' => ["Canopées – Création et entretien d'espaces verts", [
                 ['type' => 'presentation', 'titre' => 'Canopées', 'sousTitre' => "Société spécialisée dans la création et l'entretien d'espaces verts.", 'image' => 'garden.jpg', 'alt' => 'Grand jardin remplie de fleurs de toutes les couleurs'],
                 ['type' => 'public-cible-intro', 'titre' => 'Pour qui travaillons-nous ?', 'texte' => 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, assumenda minus! Voluptate vel rerum accusantium laborum provident obcaecati, quis expedita.'],
-                ['type' => 'public-cible', 'titre' => 'Particuliers', 'image' => 'particulier.jpg', 'alt' => 'Jardin de particuliers', 'icone' => 'particulierCircle.jpg'],
-                ['type' => 'public-cible', 'titre' => 'Professionnels', 'image' => 'entreprise.jpg', 'alt' => 'Espace vert professionnel', 'icone' => 'entrepriseCircle.jpg'],
-                ['type' => 'public-cible', 'titre' => 'Collectivités', 'image' => 'collectivite.jpg', 'alt' => 'Espace vert collectivité', 'icone' => 'collectiviteCircle.jpg'],
             ]],
             'qui-sommes-nous' => ['Qui sommes-nous – Canopées', [
                 ['type' => 'presentation', 'titre' => 'Qui sommes-nous ?', 'texte' => "Canopées est une entreprise spécialisée dans la création et l'entretien d'espaces verts, pour les particuliers, professionnels et collectivités.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, assumenda minus! Voluptate vel rerum accusantium laborum provident obcaecati, quis expedita."],
-                ['type' => 'fondateur', 'titre' => 'Bob', 'sousTitre' => 'Fondateur', 'texte' => 'Passionné de nature depuis toujours, Bob a fondé Canopées pour partager son amour des espaces verts.', 'image' => 'image-1.jpg', 'alt' => 'Photo de profil de Bob, fondateur de Canopées', 'icone' => 'profil-1.jpg'],
-                ['type' => 'fondateur', 'titre' => 'Tom', 'sousTitre' => 'Co-Fondateur', 'texte' => 'Expert en aménagement paysager, Tom apporte son savoir-faire technique à chaque projet Canopées.', 'image' => 'image-2.jpg', 'alt' => 'Photo de profil de Tom, cofondateur de Canopées', 'icone' => 'profil-2.jpg'],
                 ['type' => 'histoire', 'titre' => "Histoire de l'entreprise", 'texte' => 'La société Canopées a été fondée en 2020 par Bob et Tom, deux amoureux de la nature. Notre mission est de créer et entretenir des espaces naturels qui améliorent la qualité de vie des personnes.', 'image' => 'mountain.jpg', 'alt' => "Photo d'une montagne"],
                 ['type' => 'valeurs-intro', 'titre' => 'Nos valeurs', 'image' => 'arbre.webp', 'alt' => 'Plante en pot'],
-                ['type' => 'valeur', 'titre' => "Respect de l'environnement", 'texte' => 'Nous privilégions des pratiques durables et respectueuses de la biodiversité sur chaque chantier.'],
-                ['type' => 'valeur', 'titre' => 'Savoir-faire', 'texte' => "Notre équipe s'appuie sur une expertise technique éprouvée pour garantir des réalisations durables."],
-                ['type' => 'valeur', 'titre' => 'Proximité client', 'texte' => "Nous restons à l'écoute de chaque client pour construire un projet qui correspond vraiment à ses besoins."],
-                ['type' => 'valeur', 'titre' => 'Qualité et personnalisation', 'texte' => 'Nous misons sur la qualité des matériaux utilisés et la personnalisation des projets en fonction de vos goûts.'],
-                ['type' => 'valeur', 'titre' => 'Fiabilité', 'texte' => 'Nous respectons nos engagements de délais et de budget sur chacun de nos chantiers.'],
-                ['type' => 'valeur', 'titre' => 'Passion', 'texte' => 'Chaque projet est mené avec le même goût du travail bien fait, du premier croquis à la dernière plantation.'],
             ]],
             'prestations' => ['Nos prestations – Canopées', [
                 ['type' => 'presentation', 'titre' => 'Découvrez nos réalisations à Montpellier et alentours', 'texte' => 'Découvrez notre savoir-faire en images !'],
@@ -266,7 +261,6 @@ class AppFixtures extends Fixture
                         ->setTexte($donnees['texte'] ?? null)
                         ->setImage($donnees['image'] ?? null)
                         ->setAlt($donnees['alt'] ?? null)
-                        ->setIcone($donnees['icone'] ?? null)
                         ->setOrdre($index + 1)
                 );
             }
@@ -276,6 +270,68 @@ class AppFixtures extends Fixture
             foreach ($page->getSections() as $section) {
                 $manager->persist($section);
             }
+        }
+    }
+
+    private function chargerFondateurs(ObjectManager $manager): void
+    {
+        // [prénom, rôle, bio, photo, description de la photo, avatar]
+        $fondateurs = [
+            ['Bob', 'Fondateur', 'Passionné de nature depuis toujours, Bob a fondé Canopées pour partager son amour des espaces verts.', 'image-1.jpg', 'Photo de profil de Bob, fondateur de Canopées', 'profil-1.jpg'],
+            ['Tom', 'Co-Fondateur', 'Expert en aménagement paysager, Tom apporte son savoir-faire technique à chaque projet Canopées.', 'image-2.jpg', 'Photo de profil de Tom, cofondateur de Canopées', 'profil-2.jpg'],
+        ];
+
+        foreach ($fondateurs as $index => [$prenom, $role, $bio, $photo, $photoAlt, $avatar]) {
+            $manager->persist(
+                (new Fondateur())
+                    ->setPrenom($prenom)
+                    ->setRole($role)
+                    ->setBio($bio)
+                    ->setPhoto($photo)
+                    ->setPhotoAlt($photoAlt)
+                    ->setAvatar($avatar)
+                    ->setOrdre($index + 1)
+            );
+        }
+    }
+
+    private function chargerPublicsCibles(ObjectManager $manager): void
+    {
+        // [nom, photo, description de la photo, icône ronde]
+        $publics = [
+            ['Particuliers', 'particulier.jpg', 'Jardin de particuliers', 'particulierCircle.jpg'],
+            ['Professionnels', 'entreprise.jpg', 'Espace vert professionnel', 'entrepriseCircle.jpg'],
+            ['Collectivités', 'collectivite.jpg', 'Espace vert collectivité', 'collectiviteCircle.jpg'],
+        ];
+
+        foreach ($publics as $index => [$nom, $photo, $photoAlt, $icone]) {
+            $manager->persist(
+                (new PublicCible())
+                    ->setNom($nom)
+                    ->setPhoto($photo)
+                    ->setPhotoAlt($photoAlt)
+                    ->setIcone($icone)
+                    ->setOrdre($index + 1)
+            );
+        }
+    }
+
+    private function chargerValeurs(ObjectManager $manager): void
+    {
+        $valeurs = [
+            "Respect de l'environnement" => 'Nous privilégions des pratiques durables et respectueuses de la biodiversité sur chaque chantier.',
+            'Savoir-faire' => "Notre équipe s'appuie sur une expertise technique éprouvée pour garantir des réalisations durables.",
+            'Proximité client' => "Nous restons à l'écoute de chaque client pour construire un projet qui correspond vraiment à ses besoins.",
+            'Qualité et personnalisation' => 'Nous misons sur la qualité des matériaux utilisés et la personnalisation des projets en fonction de vos goûts.',
+            'Fiabilité' => 'Nous respectons nos engagements de délais et de budget sur chacun de nos chantiers.',
+            'Passion' => 'Chaque projet est mené avec le même goût du travail bien fait, du premier croquis à la dernière plantation.',
+        ];
+
+        $ordre = 1;
+        foreach ($valeurs as $titre => $texte) {
+            $manager->persist(
+                (new Valeur())->setTitre($titre)->setTexte($texte)->setOrdre($ordre++)
+            );
         }
     }
 
