@@ -62,6 +62,7 @@ class DashboardController extends AbstractDashboardController
 
         // Les contenus des pages « Accueil » et « Qui sommes-nous »
         yield MenuItem::section('Contenu des pages');
+        yield MenuItem::linkTo(PageCrudController::class, 'Textes des pages', 'fas fa-file-lines')->setCssClass('couleur-mauve');
         yield MenuItem::linkTo(FondateurCrudController::class, 'Fondateurs', 'fas fa-user-tie')->setCssClass('couleur-vert');
         yield MenuItem::linkTo(PublicCibleCrudController::class, 'Publics cibles', 'fas fa-users')->setCssClass('couleur-bleu');
         yield MenuItem::linkTo(ValeurCrudController::class, 'Nos valeurs', 'fas fa-heart')->setCssClass('couleur-rose');
