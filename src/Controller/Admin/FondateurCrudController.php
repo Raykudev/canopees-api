@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Fondateur;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -38,6 +39,8 @@ class FondateurCrudController extends AbstractCrudController
         yield TextField::new('prenom', 'Prénom');
         yield TextField::new('role', 'Rôle')
             ->setHelp('Affiché dans le badge de la carte, ex. : « Fondateur ».');
+        yield EmailField::new('email', 'Email')
+            ->setHelp("Visible uniquement dans l'administration, jamais sur le site.");
         yield TextareaField::new('bio', 'Biographie')->hideOnIndex();
         yield TextField::new('photoAlt', 'Description de la photo (accessibilité)')->hideOnIndex();
         yield ImageField::new('avatar', 'Petite photo ronde')

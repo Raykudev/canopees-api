@@ -275,13 +275,13 @@ class AppFixtures extends Fixture
 
     private function chargerFondateurs(ObjectManager $manager): void
     {
-        // [prénom, rôle, bio, photo, description de la photo, avatar]
+        // [prénom, rôle, bio, photo, description de la photo, avatar, email (visible uniquement dans l'admin)]
         $fondateurs = [
-            ['Bob', 'Fondateur', 'Passionné de nature depuis toujours, Bob a fondé Canopées pour partager son amour des espaces verts.', 'image-1.jpg', 'Photo de profil de Bob, fondateur de Canopées', 'profil-1.jpg'],
-            ['Tom', 'Co-Fondateur', 'Expert en aménagement paysager, Tom apporte son savoir-faire technique à chaque projet Canopées.', 'image-2.jpg', 'Photo de profil de Tom, cofondateur de Canopées', 'profil-2.jpg'],
+            ['Bob', 'Fondateur', 'Passionné de nature depuis toujours, Bob a fondé Canopées pour partager son amour des espaces verts.', 'image-1.jpg', 'Photo de profil de Bob, fondateur de Canopées', 'profil-1.jpg', 'bob@canopees.fr'],
+            ['Tom', 'Co-Fondateur', 'Expert en aménagement paysager, Tom apporte son savoir-faire technique à chaque projet Canopées.', 'image-2.jpg', 'Photo de profil de Tom, cofondateur de Canopées', 'profil-2.jpg', 'tom@canopees.fr'],
         ];
 
-        foreach ($fondateurs as $index => [$prenom, $role, $bio, $photo, $photoAlt, $avatar]) {
+        foreach ($fondateurs as $index => [$prenom, $role, $bio, $photo, $photoAlt, $avatar, $email]) {
             $manager->persist(
                 (new Fondateur())
                     ->setPrenom($prenom)
@@ -290,6 +290,7 @@ class AppFixtures extends Fixture
                     ->setPhoto($photo)
                     ->setPhotoAlt($photoAlt)
                     ->setAvatar($avatar)
+                    ->setEmail($email)
                     ->setOrdre($index + 1)
             );
         }

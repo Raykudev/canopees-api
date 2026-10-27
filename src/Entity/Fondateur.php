@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 use App\Repository\FondateurRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FondateurRepository::class)]
 #[ApiResource(
@@ -53,6 +54,11 @@ class Fondateur
 
     #[ORM\Column]
     private ?int $ordre = null;
+
+    // Pas de #[Groups] : l'email reste dans le back-office, il n'est jamais envoyé par l'API
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Email(message: "L'adresse email n'est pas valide.")]
+    private ?string $email = null;
 
     public function getId(): ?int
     {
@@ -144,6 +150,18 @@ class Fondateur
     public function setOrdre(int $ordre): static
     {
         $this->ordre = $ordre;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }
