@@ -14,6 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\EntrepriseRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 
 
@@ -53,6 +56,18 @@ class DashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle('Canopées - Administration');
     }
+
+    public function configureUserMenu(UserInterface $user): UserMenu
+    {
+        return parent::configureUserMenu($user)
+            ->setName($user->getPrenom())
+            ->addMenuItems([
+                MenuItem::linkTo(UserCrudController::class, 'Mon profil', 'fas fa-user')
+                    ->setAction(Action::EDIT)
+                    ->setEntityId($user->getId()),
+            ]);
+    }
+
 
     public function configureAssets(): Assets
     {
