@@ -37,6 +37,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    /**
+     * Le nouveau mot de passe tapé dans le formulaire « Mon profil ».
+     * Ce n'est PAS une colonne : il est haché puis oublié, jamais enregistré en clair.
+     */
+    private ?string $plainPassword = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -108,7 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $data = (array) $this;
         $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
-        
+
         return $data;
     }
 
@@ -132,6 +139,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
