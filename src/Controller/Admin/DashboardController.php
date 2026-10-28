@@ -38,7 +38,8 @@ class DashboardController extends AbstractDashboardController
 
         return $this->render('admin/dashboard.html.twig', [
             'cartes' => $cartes,
-            'derniersMessages' => $this->messageRepository->findBy([], ['dateEnvoi' => 'DESC'], 5),
+            // Même tri que l'écran des messages : les non lus d'abord, puis les plus récents
+            'derniersMessages' => $this->messageRepository->findBy([], ['lu' => 'ASC', 'dateEnvoi' => 'DESC'], 5),
         ]);
     }
 
