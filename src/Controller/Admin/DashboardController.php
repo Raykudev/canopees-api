@@ -12,18 +12,23 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repository\EntrepriseRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+
+
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
     // Symfony nous donne les repositories automatiquement (injection de dépendances)
     public function __construct(
+        private EntrepriseRepository $entrepriseRepository,
         private MessageRepository $messageRepository,
         private PrestationRepository $prestationRepository,
         private RealisationRepository $realisationRepository,
         private SlideRepository $slideRepository,
-    ) {
-    }
+
+    ) {}
 
     public function index(): Response
     {
@@ -65,6 +70,14 @@ class DashboardController extends AbstractDashboardController
 
         // Les contenus des pages « Accueil » et « Qui sommes-nous »
         yield MenuItem::section('Contenu des pages');
+
+        $entreprise = $this->entrepriseRepository->findOneBy([]);
+        yield MenuItem::linkTo(EntrepriseCrudController::class, 'Coordonnées', 'fas fa-address-card')
+            ->setAction(Action::EDIT)
+            ->setEntityId($entreprise->getId())
+            ->setCssClass('couleur-orange');
+
+
         yield MenuItem::linkTo(PageCrudController::class, 'Textes des pages', 'fas fa-file-lines')->setCssClass('couleur-mauve');
         yield MenuItem::linkTo(FondateurCrudController::class, 'Fondateurs', 'fas fa-user-tie')->setCssClass('couleur-vert');
         yield MenuItem::linkTo(PublicCibleCrudController::class, 'Publics cibles', 'fas fa-users')->setCssClass('couleur-bleu');
