@@ -12,7 +12,7 @@
                         <div class="text-muted small">{{ carte.libelle }}</div>
                         <div class="fs-2 fw-bold">{{ carte.nombre }}</div>
                         {% if carte.route %}
-                            <a href="{{ path(carte.route) }}" class="small">Gérer</a>
+                            <a href="{{ path(carte.route) }}" class="small">{{ carte.lien ?? 'Gérer' }}</a>
                         {% endif %}
                     </div>
                 </div>

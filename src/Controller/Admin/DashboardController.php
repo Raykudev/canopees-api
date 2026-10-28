@@ -27,9 +27,10 @@ class DashboardController extends AbstractDashboardController
 
     public function index(): Response
     {
-        // Les chiffres affichés en haut du tableau de bord : un lien « Gérer » par carte quand l'écran existe
+        // Les chiffres affichés en haut du tableau de bord : un lien par carte quand l'écran existe.
+        // Le texte du lien est « Gérer », sauf si la carte précise sa clé 'lien'.
         $cartes = [
-            ['libelle' => 'Messages non lus', 'icone' => 'fas fa-envelope', 'couleur' => 'couleur-rose', 'nombre' => $this->messageRepository->count(['lu' => false]), 'route' => 'admin_message_index'],
+            ['libelle' => 'Messages non lus', 'icone' => 'fas fa-envelope', 'couleur' => 'couleur-rose', 'nombre' => $this->messageRepository->count(['lu' => false]), 'route' => 'admin_message_index', 'lien' => 'Lire les messages'],
             ['libelle' => 'Prestations', 'icone' => 'fas fa-leaf', 'couleur' => 'couleur-vert', 'nombre' => $this->prestationRepository->count(), 'route' => 'admin_prestation_index'],
             ['libelle' => 'Réalisations', 'icone' => 'fas fa-camera', 'couleur' => 'couleur-mauve', 'nombre' => $this->realisationRepository->count(), 'route' => 'admin_realisation_index'],
             ['libelle' => 'Photos du slider', 'icone' => 'fas fa-images', 'couleur' => 'couleur-orange', 'nombre' => $this->slideRepository->count(), 'route' => 'admin_slide_index'],

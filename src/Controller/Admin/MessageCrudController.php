@@ -37,7 +37,8 @@ class MessageCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Message')
             ->setEntityLabelInPlural('Messages reçus')
-            ->setDefaultSort(['dateEnvoi' => 'DESC']);
+            // D'abord les non lus (lu = 0 avant lu = 1), puis du plus récent au plus ancien
+            ->setDefaultSort(['lu' => 'ASC', 'dateEnvoi' => 'DESC']);
     }
 
     public function configureActions(Actions $actions): Actions
@@ -53,13 +54,16 @@ class MessageCrudController extends AbstractCrudController
     {
         return $filters
             ->add('lu')
+            ->add('nom')
+            ->add('telephone')
+            ->add('mail')
             ->add('prestation')
             ->add('dateEnvoi');
     }
 
     public function configureFields(string $pageName): iterable
     {
-        yield DateTimeField::new('dateEnvoi', 'Reçu le')->setFormat('dd/MM/yyyy HH:mm');
+        yield DateTimeField::new('dateEnvoi', 'Date de réception')->setFormat('dd/MM/yyyy HH:mm');
         yield BooleanField::new('lu', 'Lu')->renderAsSwitch(false);
         yield TextField::new('prenom', 'Prénom');
         yield TextField::new('nom', 'Nom');
