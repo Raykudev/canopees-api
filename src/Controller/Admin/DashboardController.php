@@ -16,6 +16,9 @@ use App\Repository\EntrepriseRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use Symfony\Component\Security\Core\User\UserInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
 
 
 
@@ -66,6 +69,17 @@ class DashboardController extends AbstractDashboardController
                     ->setAction(Action::EDIT)
                     ->setEntityId($user->getId()),
             ]);
+    }
+
+    public function configureActions(): Actions
+    {
+        return parent::configureActions()
+            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
+                return $action->setLabel('Enregistrer et rester ici');
+            })
+            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN, function (Action $action) {
+                return $action->setLabel('Enregistrer et revenir à la liste');
+            });
     }
 
 

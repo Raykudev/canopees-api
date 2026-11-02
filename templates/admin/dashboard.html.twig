@@ -24,11 +24,11 @@
         <div class="card-body">
             <h2 class="h5">Derniers messages reçus</h2>
             {% if derniersMessages is empty %}
-                <p class="text-muted mb-0">Aucun message pour le moment.</p>
+                <p class="text-muted mb-0">Vous n'avez aucun message pour le moment.</p>
             {% else %}
                 <table class="table mb-0">
                     <thead>
-                        <tr><th>Reçu le</th><th>De</th><th>Prestation</th><th>État</th></tr>
+                        <tr><th>Reçu le</th><th>Expéditeur</th><th>Prestation demandée</th><th>État</th></tr>
                     </thead>
                     <tbody>
                         {% for message in derniersMessages %}
