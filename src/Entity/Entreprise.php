@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Attribute\Groups;
 use App\Repository\EntrepriseRepository;
 use Doctrine\DBAL\Types\Types;
@@ -13,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new Get(),
+        // La liste (une seule ligne) : React prend la première sans dépendre de son id
+        new GetCollection(),
     ],
     normalizationContext: ['groups' => ['entreprise:read']],
 )]
