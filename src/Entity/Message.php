@@ -76,6 +76,7 @@ class Message
     private ?string $message = null;
 
     #[ORM\Column]
+    #[Groups(['message:write'])]
     #[Assert\NotNull(message: 'Vous devez accepter la politique de confidentialité.')]
     #[Assert\IsTrue(message: 'Vous devez accepter la politique de confidentialité.')]
     private ?bool $rgpd = null;
