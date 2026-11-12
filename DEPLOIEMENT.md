@@ -27,7 +27,6 @@ Comment :
 - `public/.htaccess` (recette `symfony/apache-pack`) envoie à Symfony toute adresse qui n'est pas un vrai fichier.
 - `vite.config.js` place les fichiers construits dans `static/`, car `public/assets/` est utilisé par Symfony (AssetMapper).
 
-Pourquoi ce choix : une seule mise en ligne au lieu de deux, pas de configuration CORS, et il fonctionne aussi chez les hébergeurs qui bloquent les appels entre deux adresses (InfinityFree, par exemple).
 
 ---
 
