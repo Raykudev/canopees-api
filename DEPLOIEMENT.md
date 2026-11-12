@@ -1,220 +1,197 @@
 # Déploiement du site Canopées
 
-Ce document décrit comment mettre en ligne le site Canopées et comment le maintenir ensuite.
-Le site est composé de **deux applications** qui se déploient séparément :
+Le site est en ligne à l'adresse **https://canopees-mspr.alwaysdata.net**, chez l'hébergeur **alwaysdata** (offre gratuite).
 
-| Application | Rôle | Technologie | Ce qu'on met en ligne |
-|---|---|---|---|
-| `canopees-api` | API publique (`/api`) + back-office (`/admin`) | Symfony 8.1, API Platform, EasyAdmin, MariaDB | le projet PHP, sa base de données et les images |
-| `canopees` | site vitrine public | React + Vite | les fichiers statiques produits par `npm run build` |
-
-Organisation conseillée, avec deux adresses :
-
-```
-https://canopees.fr        → site React (fichiers statiques)
-https://api.canopees.fr    → Symfony (API + administration)
-```
-
-> Les adresses `canopees.fr` et `api.canopees.fr` sont des exemples, à remplacer par celles de l'hébergement réel.
+Ce document décrit comment il a été mis en ligne, comment le mettre à jour, et comment le refaire sur un autre hébergement.
 
 ---
 
-## 1. Prérequis de l'hébergement
+## 1. Architecture en production : une seule adresse
 
-| Besoin | Version / valeur | Pourquoi |
-|---|---|---|
-| PHP | **8.4 minimum** | exigé par Symfony 8 |
-| Extensions PHP | `pdo_mysql`, `intl`, `mbstring`, `ctype`, `iconv`, `xml`, `fileinfo` | base de données, traductions, envoi d'images |
-| Base de données | MariaDB 10.6+ ou MySQL 8+, moteur **InnoDB** | les clés étrangères ne fonctionnent pas en MyISAM |
-| Serveur web | Apache ou Nginx, avec **HTTPS** | le dossier public de Symfony est `public/` |
-| Accès | **SSH** conseillé (sinon FTP + phpMyAdmin) | lancer les commandes `composer` et `php bin/console` |
-| Composer | 2.x | installer les dépendances PHP |
-| Node.js | 20+ (sur le poste du développeur suffit) | construire le site React |
-| Espace disque | environ 150 Mo | dépendances (~60 Mo sans les outils de dev) + images (~20 Mo) |
+En développement, il y a deux serveurs : le site React (`npm run dev`, port 5173) et l'API Symfony (port 8000).
 
-Réglages PHP à prévoir (`php.ini` ou panneau de l'hébergeur) pour que Bob puisse envoyer des photos :
+En production, **Symfony sert tout, à la même adresse** :
 
-```ini
-upload_max_filesize = 8M
-post_max_size = 10M
-memory_limit = 256M
-```
+| Adresse | Ce qui répond |
+|---|---|
+| `/`, `/tarifs`, `/contact`, `/cgu`… | le site React construit (`public/index.html` + `public/static/`) |
+| `/api/...` | l'API (API Platform) |
+| `/admin`, `/login` | l'administration (EasyAdmin) |
+| `/uploads/...` | les photos |
+
+Comment :
+
+- `npm run build` (projet `canopees`) produit le site dans `dist/`. Son contenu est copié dans `canopees-api/public/` et versionné avec l'API.
+- `.env.production` (projet `canopees`) laisse `VITE_API_URL` vide : React appelle l'API en relatif (`/api/prestations`). Même adresse, donc **pas de CORS** à gérer en production.
+- `src/Controller/SiteController.php` renvoie `public/index.html` pour toute adresse qui n'est ni `/api`, ni `/admin`, ni `/login` : React Router affiche ensuite la bonne page.
+- `public/.htaccess` (recette `symfony/apache-pack`) envoie à Symfony toute adresse qui n'est pas un vrai fichier.
+- `vite.config.js` place les fichiers construits dans `static/`, car `public/assets/` est utilisé par Symfony (AssetMapper).
+
+Pourquoi ce choix : une seule mise en ligne au lieu de deux, pas de configuration CORS, et il fonctionne aussi chez les hébergeurs qui bloquent les appels entre deux adresses (InfinityFree, par exemple).
 
 ---
 
-## 2. Déployer l'API Symfony (`canopees-api`)
+## 2. Prérequis de l'hébergement
 
-### 2.1 Récupérer le code
+| Besoin | Chez alwaysdata |
+|---|---|
+| PHP 8.4 minimum (Symfony 8) | PHP 8.4.27 |
+| MariaDB ou MySQL, moteur InnoDB | MariaDB 11.8 |
+| Accès SSH (pour `composer` et `php bin/console`) | `ssh-canopees-mspr.alwaysdata.net` |
+| Choix du dossier public | oui (Web → Sites → Répertoire racine) |
+| HTTPS | certificat fourni, HTTPS forcé |
+
+---
+
+## 3. Mise en ligne, étape par étape
+
+### 3.1 Préparer le projet (sur le poste du développeur)
 
 ```bash
+# Dans canopees (site React)
+npm run build
+# Copier le contenu de dist/ dans canopees-api/public/, puis commiter et pousser canopees-api
+```
+
+Exporter la base de développement : phpMyAdmin (ou `mariadb-dump`) → fichier `canopees.sql` (tables et contenu).
+
+### 3.2 Configurer l'hébergement (panneau alwaysdata)
+
+1. **Environnement → PHP** : version 8.4.
+2. **Bases de données → MySQL** : créer la base `canopees-mspr_canopees` (hôte `mysql-canopees-mspr.alwaysdata.net`).
+3. **Accès distant → SSH** : connexion par mot de passe active pour l'utilisateur `canopees-mspr`.
+
+### 3.3 Installer le code (en SSH)
+
+```bash
+ssh canopees-mspr@ssh-canopees-mspr.alwaysdata.net
 git clone https://github.com/Raykudev/canopees-api.git
 cd canopees-api
 ```
 
-### 2.2 Configurer l'environnement de production
+Le projet est installé **à côté** du dossier `www` : seul son sous-dossier `public/` sera visible sur Internet.
 
-Créer un fichier **`.env.local`** (il n'est jamais envoyé sur GitHub) :
+### 3.4 Configurer la production (`.env.local`, jamais versionné)
+
+```bash
+php -r "echo bin2hex(random_bytes(16)).PHP_EOL;"   # génère la clé APP_SECRET
+nano .env.local
+```
 
 ```dotenv
 APP_ENV=prod
 APP_DEBUG=0
-APP_SECRET=une_longue_chaine_aleatoire
-DATABASE_URL="mysql://UTILISATEUR:MOT_DE_PASSE@HOTE:3306/canopees?serverVersion=11.4.9-MariaDB&charset=utf8mb4"
-CORS_ALLOW_ORIGIN='^https://canopees\.fr$'
-DEFAULT_URI=https://api.canopees.fr
+APP_SECRET=<la clé générée>
+DATABASE_URL="mysql://canopees-mspr:<mot de passe>@mysql-canopees-mspr.alwaysdata.net:3306/canopees-mspr_canopees?serverVersion=11.8.0-MariaDB&charset=utf8mb4"
+CORS_ALLOW_ORIGIN='^https://canopees-mspr\.alwaysdata\.net$'
+DEFAULT_URI=https://canopees-mspr.alwaysdata.net
 ```
 
-- `APP_ENV=prod` : désactive la barre de debug et les messages d'erreur détaillés.
-- `APP_SECRET` : clé secrète propre au serveur. La générer avec `php -r "echo bin2hex(random_bytes(16));"`.
-- `CORS_ALLOW_ORIGIN` : seul le site React a le droit d'appeler l'API depuis un navigateur.
-- `serverVersion` : à adapter à la version de la base de l'hébergeur.
+Un mot de passe contenant `@ : / # ? &` doit être encodé dans `DATABASE_URL` (`@` devient `%40`).
 
-### 2.3 Installer les dépendances
+### 3.5 Installer les dépendances
 
 ```bash
 composer install --no-dev --optimize-autoloader
 ```
 
-`--no-dev` n'installe pas les outils de développement (fixtures, maker, profiler). La commande `doctrine:fixtures:load` **n'existe donc pas en production** : impossible d'effacer la base par erreur.
+`--no-dev` n'installe pas les outils de développement : la commande `doctrine:fixtures:load`, qui vide la base, **n'existe pas en production**. Composer lance ensuite `cache:clear`, `assets:install public` et `importmap:install`.
 
-Si le serveur est sous **Apache**, ajouter le fichier `.htaccess` de Symfony :
+### 3.6 Importer la base
 
-```bash
-composer require symfony/apache-pack
-```
+phpMyAdmin d'alwaysdata → base `canopees-mspr_canopees` → **Importer** → `canopees.sql`.
 
-### 2.4 Mettre en place la base de données
-
-Les fixtures n'étant pas disponibles en production, le contenu de départ vient de la base de développement.
-
-1. **Sur le poste de développement** : phpMyAdmin → base `canopees` → **Exporter** (format SQL). Le fichier contient les tables, le contenu et l'historique des migrations.
-2. **Sur l'hébergement** : créer une base vide (`utf8mb4_unicode_ci`), puis phpMyAdmin → **Importer** le fichier.
-3. Vérifier que la structure est à jour :
+Vérification en SSH (la base importée est déjà à jour) :
 
 ```bash
 php bin/console doctrine:migrations:migrate --no-interaction
+# [OK] Already at the latest version
+php bin/console asset-map:compile
 ```
 
-S'il n'y a rien à faire, la commande l'indique : la base importée est déjà à jour.
+Les photos (`public/uploads/`) sont versionnées avec le code : elles sont arrivées avec le `git clone`.
 
-### 2.5 Envoyer les images
+### 3.7 Publier le site (panneau alwaysdata)
 
-La base ne contient que le **nom** des images. Les fichiers sont dans `public/uploads/` et ne sont pas versionnés avec le code : copier ce dossier sur le serveur (FTP ou `scp`).
+**Web → Sites** → modifier le site `canopees-mspr.alwaysdata.net` :
 
-Le serveur web doit pouvoir **écrire** dans ce dossier (ajout de photos depuis l'admin) :
+- Type : **PHP**
+- Répertoire racine : **`canopees-api/public`**
+- php.ini personnalisé, pour accepter les photos prises au téléphone :
 
-```bash
-chmod -R 775 public/uploads
+```ini
+upload_max_filesize = 8M
+post_max_size = 10M
 ```
 
-### 2.6 Préparer les fichiers publics et le cache
+- **Forcer le HTTPS** : `http://` redirige vers `https://`.
 
-```bash
-php bin/console assets:install public       # styles et scripts d'EasyAdmin et d'API Platform
-php bin/console asset-map:compile           # fichiers de assets/ (AssetMapper)
-php bin/console cache:clear                 # cache de production
-```
+### 3.8 Remplacer les comptes de développement
 
-Le serveur web doit pointer sur le dossier **`public/`** (jamais sur la racine du projet, qui contient `.env.local`).
+La base importée contenait les comptes de développement, dont un mot de passe écrit dans les fixtures (donc public sur GitHub).
 
-### 2.7 Créer les vrais comptes administrateurs
-
-La base importée contient les comptes de développement, dont le mot de passe est connu. Les supprimer (phpMyAdmin, table `user`), puis créer les vrais comptes :
+1. phpMyAdmin → table `user` → suppression des deux comptes.
+2. En SSH, création des vrais comptes, une fois par associé :
 
 ```bash
 php bin/console app:creer-compte
 ```
 
-La commande demande l'email, le prénom, le nom et le mot de passe (masqué pendant la saisie), refuse un email déjà utilisé et un mot de passe de moins de 8 caractères, puis enregistre le compte avec le rôle `ROLE_ADMIN` et un mot de passe haché. Chaque associé choisit lui-même son mot de passe.
-
-Sans accès SSH : garder les comptes importés et faire changer **immédiatement** le mot de passe de chacun via **Mon profil** dans l'administration.
+La commande demande l'email, le prénom, le nom et le mot de passe (masqué pendant la saisie), refuse un email déjà utilisé et un mot de passe de moins de 8 caractères, puis enregistre le compte avec le rôle `ROLE_ADMIN` et un mot de passe haché.
 
 ---
 
-## 3. Déployer le site React (`canopees`)
+## 4. Vérifications effectuées après la mise en ligne
 
-### 3.1 Construire le site (sur le poste du développeur)
-
-Créer `canopees/.env.production` avec l'adresse de l'API en ligne :
-
-```dotenv
-VITE_API_URL=https://api.canopees.fr
-```
-
-Puis :
-
-```bash
-npm ci
-npm run build
-```
-
-Le dossier **`dist/`** contient le site prêt à être mis en ligne (HTML, CSS, JavaScript, images).
-
-### 3.2 Envoyer les fichiers
-
-Copier le **contenu** de `dist/` à la racine du domaine `canopees.fr` (FTP ou `scp`).
-
-### 3.3 Faire fonctionner les adresses des pages
-
-Le site est une application d'une seule page : c'est React qui affiche `/tarifs`, `/contact`… Le serveur doit donc renvoyer `index.html` pour toute adresse qui n'est pas un fichier. Sous Apache, ajouter ce fichier **`.htaccess`** à côté de `index.html` :
-
-```apache
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [L]
-```
-
-Sans cette règle, recharger la page `/tarifs` donnerait une erreur 404 du serveur.
-
----
-
-## 4. Vérifications après la mise en ligne
-
-| Test | Résultat attendu |
+| Test | Résultat |
 |---|---|
-| `https://api.canopees.fr/api/prestations` | liste JSON des prestations |
-| `https://api.canopees.fr/api/messages` (GET) | erreur 405 : les messages ne sont pas lisibles publiquement |
-| `https://api.canopees.fr/admin` sans être connecté | redirection vers la page de connexion |
-| 6 mauvais mots de passe de suite | connexion bloquée pendant 1 minute |
-| Pages du site React, avec rechargement (F5) | pages affichées, images chargées |
-| Formulaire de contact | « Message envoyé », le message apparaît dans **Messages reçus** |
-| Modification d'une prestation dans l'admin | changement visible sur le site après rechargement |
-| Adresse inexistante (`/abc`) | page « Page introuvable » |
-| Cadenas HTTPS dans le navigateur | présent sur les deux adresses |
+| Pages du site (`/`, `/tarifs`, `/qui-sommes-nous`, `/mentions-legales`) | 200, contenu chargé depuis l'API |
+| `GET /api/prestations` | 200, 5 prestations |
+| `GET /api/messages` | 405 : les messages ne sont pas lisibles publiquement |
+| `POST /api/messages` invalide | 422 avec la liste des erreurs |
+| `/admin` sans être connecté | 302 vers la page de connexion |
+| Anciens mots de passe de développement | refusés |
+| `/_profiler` | 404 : outils de développement absents |
+| `/.env.local`, `/composer.json` | non accessibles (page du site renvoyée) |
+| `http://` | 301 vers `https://` |
 
 ---
 
-## 5. Mettre à jour le site plus tard
+## 5. Mettre à jour le site
 
-**API** (après une modification du code) :
+**Modification du code de l'API** (sur le poste, puis en SSH) :
 
 ```bash
+cd ~/canopees-api
 git pull
 composer install --no-dev --optimize-autoloader
 php bin/console doctrine:migrations:migrate --no-interaction
+php bin/console asset-map:compile
 php bin/console cache:clear
 ```
 
-**Site React** : modifier le code, relancer `npm run build`, renvoyer le contenu de `dist/`.
+**Modification du site React** : `npm run build`, copie de `dist/` dans `canopees-api/public/`, commit, puis la même procédure `git pull` sur le serveur.
 
-Le **contenu** (textes, prix, photos) ne demande aucun déploiement : Bob et Tom le modifient directement dans l'administration.
+Après une mise à jour d'EasyAdmin, `assets:install public` (lancé par `composer install`) recopie ses styles ; sans cela, l'administration s'affiche sans mise en forme.
+
+Le **contenu** (textes, prix, photos, messages) ne demande aucun déploiement : Bob et Tom le gèrent dans l'administration.
 
 ## 6. Sauvegardes
 
-À faire régulièrement (au minimum une fois par semaine) :
-
-- la base de données : export SQL depuis phpMyAdmin, ou `mysqldump canopees > sauvegarde.sql` ;
-- le dossier `public/uploads/` (les photos envoyées par Bob et Tom).
-
-Le code, lui, est déjà sauvegardé sur GitHub.
+- Base de données : alwaysdata en fait des copies automatiques ; un export manuel est possible depuis phpMyAdmin.
+- Photos envoyées depuis l'administration : dossier `public/uploads/` (à récupérer par SFTP).
+- Code : sur GitHub.
 
 ## 7. Sécurité en production
 
-- `APP_ENV=prod` : aucune information technique affichée en cas d'erreur.
-- `.env.local` reste hors du dossier public et hors de GitHub.
-- HTTPS obligatoire : les mots de passe de l'admin ne circulent jamais en clair.
-- Accès à `/admin` réservé au rôle `ROLE_ADMIN`, formulaire de connexion protégé par jeton CSRF, tentatives limitées à 5 par minute.
-- Mots de passe hachés (bcrypt) ; aucune création de compte possible depuis le site.
-- API en lecture seule, sauf l'envoi de messages, qui est validé côté serveur (champs obligatoires, format email et code postal, consentement RGPD).
-- Dépendances à jour : vérifier avec `composer audit` avant chaque mise en ligne.
+- `APP_ENV=prod` : aucune information technique affichée en cas d'erreur, pas de barre de debug.
+- Seul `public/` est exposé ; `.env.local`, le code et `vendor/` restent hors d'atteinte.
+- HTTPS forcé : les mots de passe de l'administration ne circulent jamais en clair.
+- `/admin` réservé au rôle `ROLE_ADMIN`, connexion protégée par jeton CSRF et limitée à 5 tentatives par minute.
+- Mots de passe hachés (bcrypt), comptes créés uniquement en SSH.
+- API en lecture seule, sauf l'envoi de messages validé côté serveur.
+- Dépendances vérifiées avec `composer audit` avant la mise en ligne.
+
+## 8. Autre hébergement
+
+La même procédure s'applique à tout hébergement PHP 8.4 avec SSH. Sans SSH (InfinityFree par exemple), il faut construire `vendor/` sur le poste et tout envoyer en FTP, ne pas oublier `assets:install`, créer les comptes autrement que par la commande, et vérifier que l'hébergeur n'ajoute pas de vérification anti-robot aux appels de l'API.
