@@ -23,6 +23,10 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+            # Bloque une adresse après 5 mots de passe faux en 1 minute (attaques par force brute)
+            login_throttling:
+                max_attempts: 5
+                interval: '1 minute'
             logout:
                 path: app_logout
                 # where to redirect after logout
