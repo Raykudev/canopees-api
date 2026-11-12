@@ -178,7 +178,7 @@ Le **contenu** (textes, prix, photos, messages) ne demande aucun déploiement : 
 
 ## 6. Sauvegardes
 
-- Base de données : alwaysdata en fait des copies automatiques ; un export manuel est possible depuis phpMyAdmin.
+- Base de données : export SQL régulier depuis phpMyAdmin (alwaysdata propose aussi des sauvegardes automatiques, à vérifier dans le panneau, menu Avancé).
 - Photos envoyées depuis l'administration : dossier `public/uploads/` (à récupérer par SFTP).
 - Code : sur GitHub.
 
