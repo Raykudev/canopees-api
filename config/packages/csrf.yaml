@@ -4,10 +4,10 @@ framework:
         csrf_protection:
             token_id: submit
 
-    # « submit » (les formulaires, dont ceux d'EasyAdmin) n'est volontairement PAS dans cette liste :
+    # « submit » (les formulaires, dont ceux d'EasyAdmin) et « authenticate » (la page de connexion,
+    # qui est celle d'EasyAdmin) ne sont volontairement PAS dans cette liste :
     # le mode sans état a besoin d'un JavaScript que les pages d'EasyAdmin ne chargent pas.
-    # Ses jetons sont donc stockés en session, la protection CSRF classique.
+    # Leurs jetons sont donc stockés en session, la protection CSRF classique.
     csrf_protection:
         stateless_token_ids:
-            - authenticate
             - logout
